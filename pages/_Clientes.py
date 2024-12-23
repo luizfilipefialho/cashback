@@ -1,8 +1,8 @@
-import pandas as pd
 import streamlit as st
 from data_manager import get_session, Customer, CashbackTransaction, CashbackStatus
 from datetime import datetime, timedelta
 from urllib.parse import quote
+import pandas as pd
 
 def clientes_page():
     st.title("📇 Gestão de Clientes")
@@ -15,30 +15,34 @@ def clientes_page():
     if choice == "Adicionar Cliente":
         st.subheader("Adicionar Novo Cliente")
         nome = st.text_input("Nome")
-        cpf = st.text_input("CPF")
-        telefone = st.text_input("Telefone")
+        cpf = st.text_input("CPF (opcional)")
+        telefone = st.text_input("Telefone (opcional)")
         
         if st.button("Salvar"):
-            if nome and cpf and telefone:
-                cliente_existente = session.query(Customer).filter(Customer.cpf == cpf).first()
+            if not cpf and not telefone:
+                st.warning("Por favor, informe pelo menos o CPF ou o telefone.")
+            else:
+                cliente_existente = session.query(Customer).filter(
+                    (Customer.cpf == cpf) | (Customer.telefone == telefone)
+                ).first()
+                
                 if cliente_existente:
-                    st.error(f"O CPF {cpf} já está cadastrado para o cliente {cliente_existente.nome}.")
+                    st.error(f"O CPF ou telefone já está cadastrado para o cliente {cliente_existente.nome}.")
                 else:
                     novo_cliente = Customer(nome=nome, cpf=cpf, telefone=telefone)
                     session.add(novo_cliente)
                     session.commit()
                     st.success(f"Cliente {nome} adicionado com sucesso!")
-            else:
-                st.warning("Por favor, preencha todos os campos.")
     
     elif choice == "Buscar Clientes":
         st.subheader("Lista de Clientes")
-        busca = st.text_input("Digite o Nome ou CPF para buscar")
+        busca = st.text_input("Digite o Nome, CPF ou Telefone para buscar")
         
         if busca:
             clientes = session.query(Customer).filter(
                 (Customer.nome.ilike(f"%{busca}%")) | 
-                (Customer.cpf.ilike(f"%{busca}%"))
+                (Customer.cpf.ilike(f"%{busca}%")) |
+                (Customer.telefone.ilike(f"%{busca}%"))
             ).all()
         else:
             clientes = session.query(Customer).all()
@@ -63,16 +67,16 @@ def clientes_page():
                            f"Você tem R${saldo_total:.2f} de cashback disponível na PEREGRINO com expiração em {data_expiracao}.\n" \
                            "Venha visitar nossa loja para resgatar!"
                 mensagem_codificada = quote(mensagem)
-                link_whatsapp = f"https://wa.me/55{cliente.telefone}?text={mensagem_codificada}"
+                link_whatsapp = f"https://wa.me/55{cliente.telefone}?text={mensagem_codificada}" if cliente.telefone else None
 
                 # Adicionar os dados na tabela
                 data.append({
                     "Nome": cliente.nome,
-                    "CPF": cliente.cpf,
-                    "Telefone": cliente.telefone,
+                    "CPF": cliente.cpf or "N/A",
+                    "Telefone": cliente.telefone or "N/A",
                     "Saldo Total (R$)": f"R${saldo_total:.2f}",
                     "Expiração Mais Próxima": data_expiracao,
-                    "Contato": f"[Enviar WhatsApp]({link_whatsapp})"
+                    "Contato": f"[Enviar WhatsApp]({link_whatsapp})" if link_whatsapp else "N/A"
                 })
 
             # Exibir os dados em uma tabela
