@@ -72,7 +72,7 @@ def utilizar_saldo_page():
                 nova_transacao = CashbackTransaction(
                     customer_id=customer.customer_id,
                     valor=novo_cashback,
-                    expiration_date=datetime.utcnow() + timedelta(days=365),
+                    expiration_date=datetime.utcnow() + timedelta(days=30),
                     status=CashbackStatus.active,
                     created_by=st.session_state["username"],
                     id_compra=id_nova_compra  # Registrar o ID da nova compra
