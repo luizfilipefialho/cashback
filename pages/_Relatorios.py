@@ -33,13 +33,15 @@ def relatorios_page():
         transacoes = session.query(CashbackTransaction).all()
         data = [{
             "ID Transação": t.transaction_id,
+            "ID Compra": t.id_compra,  # Adicionado
             "Cliente": t.customer.nome,
             "Valor": f"R${t.valor:.2f}",
             "Data de Criação": t.created_at.date(),
-            "Criado Por": t.created_by,  # Adiciona o usuário que criou
+            "Criado Por": t.created_by,
             "Data de Expiração": t.expiration_date.date(),
             "Status": t.status.value
-        } for t in transacoes]
+            } for t in transacoes]
+
         df = pd.DataFrame(data)
         st.dataframe(df)
         st.download_button(
@@ -72,13 +74,13 @@ def relatorios_page():
     elif choice == "Exportar Utilizações":
         utilizacoes = session.query(CashbackUsage).all()
         data = [{
-            "ID Uso": u.usage_id,
-            "Cliente": u.customer.nome,
-            "Valor Utilizado": f"R${u.used_value:.2f}",
-            "Data de Utilização": u.used_at.date(),
-            "Utilizado Por": u.used_by,
-            "Usado por": "N/A"  # Como não há autenticação, indicamos como "N/A"
-        } for u in utilizacoes]
+                "ID Uso": u.usage_id,
+                "ID Compra": u.id_compra,  # Adicionado
+                "Cliente": u.customer.nome,
+                "Valor Utilizado": f"R${u.used_value:.2f}",
+                "Data de Utilização": u.used_at.date(),
+                "Utilizado Por": u.used_by
+            } for u in utilizacoes]
         df = pd.DataFrame(data)
         st.dataframe(df)
         st.download_button(
