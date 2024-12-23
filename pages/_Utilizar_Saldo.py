@@ -31,7 +31,7 @@ def utilizar_saldo_page():
         saldo_total = sum(t.valor for t in transacoes)
         st.write(f"**Saldo Total Disponível:** R${saldo_total:.2f}")
         
-        valor_utilizar = st.number_input("Valor a Utilizar (R$)", min_value=0.01, max_value=saldo_total, step=0.01, value=saldo_total)
+        valor_utilizar = st.number_input("Valor a Utilizar (R$)", min_value=0.00, max_value=saldo_total, step=0.01, value=saldo_total)
         
         if st.button("Utilizar Saldo"):
             if 0 < valor_utilizar <= saldo_total:
