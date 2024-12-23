@@ -36,6 +36,7 @@ def relatorios_page():
             "Cliente": t.customer.nome,
             "Valor": f"R${t.valor:.2f}",
             "Data de Criação": t.created_at.date(),
+            "Criado Por": t.created_by,  # Adiciona o usuário que criou
             "Data de Expiração": t.expiration_date.date(),
             "Status": t.status.value
         } for t in transacoes]
@@ -75,6 +76,7 @@ def relatorios_page():
             "Cliente": u.customer.nome,
             "Valor Utilizado": f"R${u.used_value:.2f}",
             "Data de Utilização": u.used_at.date(),
+            "Utilizado Por": u.used_by,
             "Usado por": "N/A"  # Como não há autenticação, indicamos como "N/A"
         } for u in utilizacoes]
         df = pd.DataFrame(data)

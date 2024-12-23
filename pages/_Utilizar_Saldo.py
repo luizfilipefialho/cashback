@@ -51,7 +51,8 @@ def utilizar_saldo_page():
                 # Registrar no uso
                 usage = CashbackUsage(
                     customer_id=customer.customer_id,
-                    used_value=valor_utilizar
+                    used_value=valor_utilizar,
+                    used_by=st.session_state.username  # Registra o usuário que utilizou
                 )
                 session.add(usage)
                 session.commit()

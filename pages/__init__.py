@@ -34,3 +34,11 @@ def load_pages():
         utilizar_saldo_page()
     elif page == "Relatórios":
         relatorios_page()
+
+    st.sidebar.button("Logout", on_click=lambda: logout())  # Adiciona o botão de logout
+
+def logout():
+    st.session_state["authenticated"] = False
+    st.session_state["username"] = None
+    st.rerun()
+

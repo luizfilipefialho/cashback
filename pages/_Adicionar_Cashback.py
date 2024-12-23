@@ -40,7 +40,8 @@ def transacoes_page():
                     customer_id=customer.customer_id,
                     valor=valor_cashback,
                     expiration_date=expiration_date,
-                    status=CashbackStatus.active
+                    status=CashbackStatus.active,
+                    created_by=st.session_state.username
                 )
                 session.add(transacao)
                 session.commit()

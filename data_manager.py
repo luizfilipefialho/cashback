@@ -40,6 +40,7 @@ class CashbackTransaction(Base):
     status = Column(Enum(CashbackStatus), default=CashbackStatus.active)
     used_at = Column(DateTime, nullable=True)
     used_value = Column(Float, nullable=True)
+    created_by = Column(String, nullable=True)  # Adiciona o usuário que criou a transação
 
     customer = relationship("Customer", back_populates="transactions")
 
@@ -58,6 +59,7 @@ class CashbackUsage(Base):
     customer_id = Column(Integer, ForeignKey("customers.customer_id"), nullable=False)
     used_value = Column(Float, nullable=False)
     used_at = Column(DateTime, default=datetime.utcnow)
+    used_by = Column(String, nullable=True)  # Adiciona o usuário que utilizou o saldo
     # used_by = Column(Integer, ForeignKey("users.user_id"), nullable=False)  # Remover se não rastrear usuários
 
     customer = relationship("Customer")
