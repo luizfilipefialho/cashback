@@ -103,6 +103,9 @@ def relatorios_page():
             saldo_total = sum(t.valor for t in transacoes)
             saldo_a_expirar = sum(t.valor for t in transacoes if t.expiration_date > agora)
 
+
+            if saldo_total == 0:
+                continue              
             consolidado = {"🔴 <7 dias": 0.0, "🟡 7-15 dias": 0.0, "🟢 >15 dias": 0.0}
             for t in transacoes:
                 dias_para_expirar = (t.expiration_date - agora).days

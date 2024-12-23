@@ -11,6 +11,9 @@ from pages._Gestao_Transacoes import gestao_transacoes_page
 
 def load_pages():
     st.sidebar.image("1708967842_logo.webp", use_container_width=True)  # Substitua "path/to/logo.png" pelo caminho do seu logo.
+    if "username" in st.session_state and st.session_state["username"]:
+        user_name = st.session_state["username"].capitalize()
+        st.sidebar.write(f"Olá, **{user_name}**!")
     page = st.sidebar.radio("Gestão de Cashback", [
         "Gestão de Clientes",
         "Adicionar Cashback",

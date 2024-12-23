@@ -1,6 +1,8 @@
+import pandas as pd
 import streamlit as st
 from data_manager import get_session, Customer, CashbackTransaction, CashbackStatus
 from datetime import datetime, timedelta
+from urllib.parse import quote
 
 def clientes_page():
     st.title("📇 Gestão de Clientes")
@@ -45,18 +47,40 @@ def clientes_page():
             data = []
             for cliente in clientes:
                 saldo_total = sum(t.valor for t in cliente.transactions if t.status == CashbackStatus.active)
-                saldo_expirando = sum(
-                    t.valor for t in cliente.transactions 
-                    if t.status == CashbackStatus.active and t.expiration_date <= datetime.utcnow() + timedelta(days=30)
+                transacao_expiracao = min(
+                    (t for t in cliente.transactions if t.status == CashbackStatus.active),
+                    key=lambda t: t.expiration_date,
+                    default=None
                 )
+                
+                if transacao_expiracao:
+                    data_expiracao = transacao_expiracao.expiration_date.strftime("%d/%m/%Y")
+                else:
+                    data_expiracao = "N/A"
+
+                # Criar mensagem de WhatsApp
+                mensagem = f"Olá {cliente.nome}, Tudo bem?\n\n" \
+                           f"Você tem R${saldo_total:.2f} de cashback disponível na PEREGRINO com expiração em {data_expiracao}.\n" \
+                           "Venha visitar nossa loja para resgatar!"
+                mensagem_codificada = quote(mensagem)
+                link_whatsapp = f"https://wa.me/55{cliente.telefone}?text={mensagem_codificada}"
+
+                # Adicionar os dados na tabela
                 data.append({
                     "Nome": cliente.nome,
                     "CPF": cliente.cpf,
                     "Telefone": cliente.telefone,
-                    "Saldo Total (R$)": f"{saldo_total:.2f}",
-                    "Saldo Expirando em 30 Dias (R$)": f"{saldo_expirando:.2f}"
+                    "Saldo Total (R$)": f"R${saldo_total:.2f}",
+                    "Expiração Mais Próxima": data_expiracao,
+                    "Contato": f"[Enviar WhatsApp]({link_whatsapp})"
                 })
-            st.table(data)
+
+            # Exibir os dados em uma tabela
+            df = pd.DataFrame(data)
+            st.markdown(
+                df.to_markdown(index=False),
+                unsafe_allow_html=True
+            )
         else:
             st.info("Nenhum cliente encontrado com os critérios de busca.")
     
