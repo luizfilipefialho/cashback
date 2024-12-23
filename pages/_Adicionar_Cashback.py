@@ -1,11 +1,11 @@
-# pages/2_Transacoes.py
+# pages/_Adicionar_Cashback.py
 
 import streamlit as st
 from data_manager import get_session, Customer, CashbackTransaction, CashbackStatus
 from datetime import datetime, timedelta
 
 def transacoes_page():
-    st.title("💰 Gestão de Transações de Cashback")
+    st.title("➕ Adicionar Cashback")
     
     session = get_session()
     
@@ -22,41 +22,30 @@ def transacoes_page():
         customer_cpf = cliente.split(" - ")[1]
         customer = session.query(Customer).filter(Customer.cpf == customer_cpf).first()
         
+        # Adicionar Cashback
         st.subheader(f"Adicionar Cashback para {customer.nome}")
-        valor = st.number_input("Valor do Cashback (R$)", min_value=0.01, step=0.01)
-        validade = st.number_input("Validade (dias)", min_value=1, value=30)
+        valor_compra = st.number_input("Valor da Compra (R$)", min_value=0.01, step=0.01, value=100.00)
+        percentual_cashback = st.number_input("Percentual de Cashback (%)", min_value=0.0, max_value=100.0, step=0.1, value=10.0)
+        
+        # Calcular o valor do cashback
+        valor_cashback = (valor_compra * percentual_cashback) / 100 if valor_compra > 0 else 0.0
+        st.write(f"**Valor do Cashback Calculado:** R${valor_cashback:.2f}")
+        
+        validade = st.number_input("Validade do Cashback (dias)", min_value=1, value=30)
         
         if st.button("Adicionar Cashback"):
-            if valor > 0 and validade > 0:
+            if valor_cashback > 0 and validade > 0:
                 expiration_date = datetime.utcnow() + timedelta(days=int(validade))
                 transacao = CashbackTransaction(
                     customer_id=customer.customer_id,
-                    valor=valor,
+                    valor=valor_cashback,
                     expiration_date=expiration_date,
                     status=CashbackStatus.active
                 )
                 session.add(transacao)
                 session.commit()
-                st.success(f"Cashback de R${valor:.2f} adicionado para {customer.nome}. Expira em {expiration_date.date()}.")
+                st.success(f"Cashback de R${valor_cashback:.2f} adicionado para {customer.nome}. Expira em {expiration_date.date()}.")
             else:
-                st.warning("Valor e validade devem ser maiores que zero.")
-    
-    # Listar Transações Ativas
-    st.subheader("Transações Ativas")
-    transacoes = session.query(CashbackTransaction).filter(
-        CashbackTransaction.status == CashbackStatus.active
-    ).all()
-    if transacoes:
-        data = []
-        for t in transacoes:
-            data.append({
-                "Cliente": t.customer.nome,
-                "CPF": t.customer.cpf,
-                "Valor": f"R${t.valor:.2f}",
-                "Expira em": t.expiration_date.date()
-            })
-        st.table(data)
-    else:
-        st.info("Nenhuma transação ativa encontrada.")
+                st.warning("Valor do cashback e validade devem ser maiores que zero.")
     
     session.close()

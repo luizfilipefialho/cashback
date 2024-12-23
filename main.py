@@ -7,6 +7,9 @@ import pages
 def main():
     # Inicializa o banco de dados e cria as tabelas se não existirem
     init_db()
+    st.set_page_config(page_title="Cashback Peregrino")
+
+
     
     # Verifica e atualiza cashback expirado
     verificar_expirados()
