@@ -1,0 +1,7 @@
+streamlit
+streamlit-authenticator
+pandas
+python-dotenv
+sqlalchemy
+bcrypt
+pytest
