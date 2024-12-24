@@ -63,7 +63,8 @@ def clientes_page():
                     data_expiracao = "N/A"
 
                 # Criar mensagem de WhatsApp
-                mensagem = f"Olá {cliente.nome}, Tudo bem?\n\n" \
+                primeiro_nome = cliente.nome.split()[0].capitalize()
+                mensagem = f"Olá {primeiro_nome}, Tudo bem?\n\n" \
                            f"Você tem R${saldo_total:.2f} de cashback disponível na PEREGRINO com expiração em {data_expiracao}.\n" \
                            "Venha visitar nossa loja para resgatar!"
                 mensagem_codificada = quote(mensagem)
