@@ -16,10 +16,10 @@ def load_pages():
         st.sidebar.write(f"Olá, **{user_name}**!")
     page = st.sidebar.radio("Gestão de Cashback", [
         "Gestão de Clientes",
+        "Utilizar Saldo",
         "Adicionar Cashback",
         "Gestão de Transações",
         "Cashback Expirados",
-        "Utilizar Saldo",
         "Relatórios"
     ])
     
