@@ -97,7 +97,16 @@ def utilizar_saldo_page():
                     session.add(nova_transacao)
 
                     session.commit()
-                    st.success(f"R${limite_cashback:.2f} utilizados. Novo cashback de R${novo_cashback:.2f} adicionado!")
+                    st.markdown(
+                                    f"""
+                                    <div style="background-color: #d4edda; padding: 10px; border-radius: 5px;">
+                                        <h4>Saldo utilizado com sucesso!</h4>
+                                        <p>💵 Valor utilizado: <strong>R${limite_cashback:.2f}</strong></p>
+                                        <p>🎉 Novo cashback gerado: <strong>R${novo_cashback:.2f}</strong></p>
+                                    </div>
+                                    """,
+                                    unsafe_allow_html=True
+                                )
         else:
             st.error("Cliente não encontrado. Verifique os dados e tente novamente.")
 
