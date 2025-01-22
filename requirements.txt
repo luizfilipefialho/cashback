@@ -6,3 +6,4 @@ sqlalchemy
 bcrypt
 pytest
 tabulate
+xlsxwriter
