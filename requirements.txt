@@ -7,3 +7,4 @@ bcrypt
 pytest
 tabulate
 xlsxwriter
+openpyxl
