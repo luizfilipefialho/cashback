@@ -24,8 +24,7 @@ def load_pages():
         "Gestão de Transações",
         "Cashback Expirados",
         "Relatórios",
-        "Importação",
-        "Excluir Transações"
+        "Importação"
     ])
     
 
