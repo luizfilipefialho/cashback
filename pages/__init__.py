@@ -8,6 +8,8 @@ from pages._Utilizar_Saldo import utilizar_saldo_page
 from pages._Relatorios import relatorios_page
 from pages._Gestao_Transacoes import gestao_transacoes_page
 from pages._Importar_Transacoes import importar_transacoes_page
+from pages._Excluir_Transacoes import excluir_transacoes_page
+
 
 
 def load_pages():
@@ -22,7 +24,8 @@ def load_pages():
         "Gestão de Transações",
         "Cashback Expirados",
         "Relatórios",
-        "Importação"
+        "Importação",
+        "Excluir Transações"
     ])
     
 
@@ -41,6 +44,9 @@ def load_pages():
         relatorios_page()
     elif page == "Importação":
         importar_transacoes_page()
+    elif page == "Excluir Transações":
+        excluir_transacoes_page()
+
 
     st.sidebar.button("Logout", on_click=lambda: logout())  # Adiciona o botão de logout
 
